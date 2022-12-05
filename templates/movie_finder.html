@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Movie Finder</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="../css/movie_finder.css">
+	</head>
+	<body>
+		<div class="full_body">
+			<div class="title">Movie Finder</div>
+			<div class="search-box">
+				<input type="text" placeholder="Enter Movie name" class="form-input" id="search_input">
+				<button class="search" onclick="mov_js()">Search</button>
+			</div>
+		</div>
+		<div id="result"></div>
+		<script type="text/javascript">
+			function mov_js()
+			{
+				var entered_input=document.getElementById("search_input").value;
+				var apikey="35c4806d";
+
+				var httpRequest=new XMLHttpRequest();
+				var url="http://www.omdbapi.com/?apikey="+apikey+"&t="+entered_input;
+
+				var result="";
+				httpRequest.open("GET",url);
+				httpRequest.send();
+
+				httpRequest.onreadystatechange=function()
+				{
+					if(this.readyState==4 && this.status==200)
+					{
+						m_data=JSON.parse(this.responseText);
+						console.log(m_data);
+						if(m_data.Response=='True')
+						{
+							result=`
+								<div class="card">
+									<img src="${m_data.Poster}" alt="Poster not found" width="300px" height="300px"/>
+									<br>
+									<div>
+									<table>
+										<tr>
+											<th>Title:</th>
+											<th style="font-size:30px;">${m_data.Title}</th>
+										</tr>
+										<tr>
+											<td>Actors:</td>
+											<td>${m_data.Actors}</td>
+										</tr>
+										<tr>
+											<td>Rating:</td>
+											<td>${m_data.imdbRating}</td>
+										</tr>
+										<tr>
+											<td>Director:</td>
+											<td>${m_data.Director}</td>
+										</tr>
+										<tr>
+											<td>Released:</td>
+											<td>${m_data.Released}</td>
+										</tr>
+										<tr>
+											<td>Genre</td>
+											<td>${m_data.Genre}</td>
+										</tr>
+									</table>
+									</div>
+								</div>`;
+						}
+						else
+							result=m_data.Error;
+						document.getElementById("result").innerHTML=result;
+					}
+				}
+			}
+		</script>
+	</body>
+</html>
